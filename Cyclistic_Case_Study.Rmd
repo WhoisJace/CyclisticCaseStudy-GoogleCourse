@@ -1,0 +1,72 @@
+---
+title: "Cyclistic Case Study"
+author: "Jason Bazile"
+date: "2023-01-18"
+output: html_document
+---
+
+## Setting up my enviroment by installing packages
+Notes: Before beginning I loaded in the packages that i would need. I used the 'tidyverse', 'lubridate', and 'ggplot2'
+
+```{r Load Libraries}
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+```
+
+```{r Call in cleaned data sets}
+September <- read_csv("September2022.csv")
+October <- read_csv("October2022.csv")
+November <- read_csv("November2022.csv")
+December <- read_csv("December2022.csv")
+March <- read_csv("March2022.csv")
+April <- read_csv("April2022.csv")
+May <- read_csv("May2022.csv")
+June <- read_csv("June2022.csv")
+July <- read_csv("July2022.csv")
+August <- read_csv("August2022.csv")
+January <- read_csv("January2022.csv")
+Febuary <- read_csv("Febuary2022.csv")
+```
+
+```{r Comparison of ride lengths between Members and Casuals}
+aggregate(All_trips$Ride_Length ~ All_trips$User_Type, FUN = mean)
+aggregate(All_trips$Ride_Length ~ All_trips$User_Type, FUN = median)
+aggregate(All_trips$Ride_Length ~ All_trips$User_Type, FUN = max)
+aggregate(All_trips$Ride_Length ~ All_trips$User_Type, FUN = min)
+aggregate(All_trips$Ride_Length ~ All_trips$User_Type + All_trips$Day_of_Week, FUN = mean)
+aggregate(All_trips$Ride_Length ~ All_trips$User_Type + All_trips$Day_of_Week, FUN = sum)
+```
+
+```{r Plotting usuage between Members and Casuals}
+All_trips_2 <- All_trips %>% 
+  group_by(User_Type) %>% 
+  summarise(number_of_rides = n())
+ggplot(data = All_trips)+
+  geom_bar(mapping = aes(x = User_Type))
+```
+
+```{r}
+ggplot(data = All_trips)+
+  geom_bar(mapping = aes(x = Day_of_Week, fill=User_Type ))
+```
+
+```{r}
+ggplot(All_trips, mapping = aes(x = Day_of_Week, y = Ride_Length, fill=User_Type))+
+  geom_col(position = "fill")
+```
+
+```{r}
+All_trips_3 <- All_trips %>% 
+  group_by(User_Type, Day_of_Week)%>% 
+  summarise(User_Type_Amount = n())
+```
+
+```{r}
+All_trips_4 <- All_trips %>% 
+  group_by(User_Type, Bike_Type) %>% 
+  summarise(Total = n())
+ggplot(data = All_trips_4)+
+  geom_point(mapping = aes(x = User_Type, y = Total, fill = Bike_Type, color = Bike_Type))
+```
+
